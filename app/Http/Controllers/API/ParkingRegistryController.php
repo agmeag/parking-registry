@@ -65,12 +65,10 @@ class ParkingRegistryController extends Controller
             // Calculate elapsed time
             $elapsedMinutes = now()->parse($registry->entry_time)->diffInMinutes($registry->exit_time);
 
-            $vehicle = Vehicle::where('plate_number', $request->plate_number)->first();
-
             $result = null;
             // If the vehicle is registered as official or resident, update the accumulated_time
-            if ($vehicle && ($vehicle->is_official || $vehicle->is_resident)) {
-                $vehicle->update(['accumulated_time' => $vehicle->accumulated_time + $elapsedMinutes]);
+            if ($registry->vehicle && ($registry->vehicle->is_official || $registry->vehicle->is_resident)) {
+                $registry->vehicle->update(['accumulated_time' => $registry->vehicle->accumulated_time + $elapsedMinutes]);
             } else {
                 $result = [
                     "plate_number" => $registry->plate_number,
@@ -88,5 +86,16 @@ class ParkingRegistryController extends Controller
 
             return $this->error('Salida no pudo ser registrada', 500);
         }
+    }
+
+    public function monthStart()
+    {
+        Vehicle::whereHas('vehicleType', function ($query) {
+            $query->whereIn('key', ['resident', 'official']);
+        })->update(['accumulated_time' => 0]);
+
+        ParkingRegistry::whereHas('vehicle.vehicleType', function ($query) {
+            $query->where('key', 'official');
+        })->delete();
     }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Define foreign key constraints
-            $table->foreign('vehicle_id')->references('id')->on('vehicles')->onDelete('set null');
+            $table->foreign('vehicle_id')->references('id')->on('vehicles')->cascadeOnDelete();
         });
     }
 

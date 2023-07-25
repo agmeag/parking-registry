@@ -29,5 +29,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::prefix('parking')->group(function () {
         Route::post('entry', [ParkingRegistryController::class, 'registerEntry']);
         Route::post('exit', [ParkingRegistryController::class, 'registerExit']);
+        Route::get('monthstart', [ParkingRegistryController::class, 'monthStart']);
     });
 });
