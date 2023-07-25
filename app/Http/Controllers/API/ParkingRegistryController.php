@@ -98,4 +98,44 @@ class ParkingRegistryController extends Controller
             $query->where('key', 'official');
         })->delete();
     }
+
+    public function generatePaymentResidentBill(Request $request)
+    {
+        try {
+            // Retrieve the name of the file from the request
+            $filename = $request->input('filename') . '.txt';
+            // Get resident vehicles with accumulated time and calculate the payment
+            $residentVehicles = Vehicle::whereHas('vehicleType', function ($query) {
+                $query->whereIn('key', ['resident']);
+            })->where('accumulated_time', '>', 0)->get();
+
+            $content = '';
+            if (!count($residentVehicles) > 0) {
+                $line = 'No existen vehiculos de residente registrados';
+                $content .= $line . "\r\n";
+            } else {
+                $line = str_pad("Núm. placa", 30) . str_pad("Tiempo estacionado (min.)", 30) . str_pad("Cantidad a pagar", 30);
+                $content .= $line . "\r\n";
+                foreach ($residentVehicles as $vehicle) {
+                    $minutes = $vehicle->accumulated_time;
+                    $quantityToPay = $minutes * VehicleType::where('key', 'non-registered')->first()->parking_cost_per_minute; // Assuming the parking cost per minute is 0.05
+                    $line = str_pad($vehicle->plate_number, 30) . str_pad($minutes, 30) . str_pad(number_format((float)$quantityToPay, 2, '.', ''), 30);
+                    $content .= $line . "\r\n";
+                }
+            }
+
+            // Create the response for file download
+            $headers = [
+                'Content-type'        => 'text/plain',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ];
+
+            return response()->streamDownload(function () use ($content) {
+                echo $content;
+            }, $filename, $headers);
+        } catch (\Throwable $th) {
+            Log::error("ERROR | Message: {$th->getMessage()}, Line: {$th->getLine()}, File: {$th->getFile()}");
+            return $this->error('Existió un problema al generar el archivo', 500);
+        }
+    }
 }
