@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\VehicleController;
-use App\Http\Controllers\ParkingRegistryController;
+use App\Http\Controllers\API\ParkingRegistryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,5 +24,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
             Route::post('official', [VehicleController::class, 'registerVehicleAsOfficial']);
             Route::post('resident', [VehicleController::class, 'registerVehicleAsResident']);
         });
+    });
+
+    Route::prefix('parking')->group(function () {
+        Route::post('entry', [ParkingRegistryController::class, 'registerEntry']);
+        Route::post('exit', [ParkingRegistryController::class, 'registerExit']);
     });
 });
