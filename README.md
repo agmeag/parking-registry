@@ -1,3 +1,49 @@
+# Parking Registry installation
+
+## Project setup
+```
+composer install
+```
+## Setup .env (Linux)
+```
+cp .env.example .env
+```
+## Change ENV Values
+```
+APP_NAME=Laravel
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=false
+APP_URL=http://localhost:8000
+```
+## Generate key
+```
+php artisan key:generate
+```
+## Migrate database
+```
+php artisan migrate --seed  
+```
+## Setup database connection
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=parking_registry
+DB_USERNAME=root
+DB_PASSWORD=
+```
+## Start server
+```
+php artisan serve
+```
+## Login on laravel nova
+```
+login as:
+user: employee@employee.com
+password: employee@employee.com
+```
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
