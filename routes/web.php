@@ -14,5 +14,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('api');
 });
+
+Route::get('/{any}', function () {
+    return redirect("/");
+})->where('any', '.*');
