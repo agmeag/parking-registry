@@ -6,21 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('vehicle_types', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->enum('role', ['super_admin', 'admin', 'employee']);
-            $table->rememberToken();
+            $table->string('name');
+            $table->decimal('parking_cost_per_minute', 8, 2)->default(0);
+            $table->string('key');
             $table->timestamps();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('vehicle_types');
     }
 };

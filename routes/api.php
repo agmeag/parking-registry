@@ -1,19 +1,35 @@
 <?php
 
+use App\Http\Controllers\API\Auth\AuthController;
+use App\Http\Controllers\API\VehicleController;
+use App\Http\Controllers\API\ParkingRegistryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+Route::get('status',  function () {
+    return response()->json(['message' => 'Working project.']);
+});
+Route::prefix('auth')->group(function () {
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('register', [AuthController::class, 'register']);
+});
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('user', [AuthController::class, 'getUser']);
+});
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::prefix('vehicle')->group(function () {
+        Route::prefix('register')->group(function () {
+            Route::post('official', [VehicleController::class, 'registerVehicleAsOfficial']);
+            Route::post('resident', [VehicleController::class, 'registerVehicleAsResident']);
+        });
+    });
+
+    Route::prefix('parking')->group(function () {
+        Route::post('entry', [ParkingRegistryController::class, 'registerEntry']);
+        Route::post('exit', [ParkingRegistryController::class, 'registerExit']);
+        Route::post('ticket', [ParkingRegistryController::class, 'generatePaymentResidentBill']);
+        Route::get('monthstart', [ParkingRegistryController::class, 'monthStart']);
+    });
 });
