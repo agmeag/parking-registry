@@ -16,14 +16,6 @@ APP_KEY=
 APP_DEBUG=false
 APP_URL=http://localhost:8000
 ```
-## Generate key
-```
-php artisan key:generate
-```
-## Migrate database
-```
-php artisan migrate --seed  
-```
 ## Setup database connection
 ```
 DB_CONNECTION=mysql
@@ -32,6 +24,14 @@ DB_PORT=3306
 DB_DATABASE=parking_registry
 DB_USERNAME=root
 DB_PASSWORD=
+```
+## Generate key
+```
+php artisan key:generate
+```
+## Migrate database
+```
+php artisan migrate --seed  
 ```
 ## Start server
 ```
